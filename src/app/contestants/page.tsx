@@ -49,7 +49,7 @@ export default function ContestantsPage() {
   }, [selectedCategory]);
 
   const fetchContestants = async () => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://cre-8-backend.vercel.app';
     if (!apiUrl) {
       setError('API URL is not configured');
       return;

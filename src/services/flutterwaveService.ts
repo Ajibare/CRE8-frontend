@@ -71,7 +71,7 @@ export class FlutterwaveService {
 
   static async verifyPayment(transactionId: string): Promise<{ success: boolean; message?: string; data?: unknown }> {
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://cre-8-backend.vercel.app/api';
       const response = await fetch(`${API_URL}/payments/callback?transaction_id=${transactionId}`);
       const data = await response.json();
 
@@ -88,7 +88,7 @@ export class FlutterwaveService {
 
   static async initiatePayment(email: string, referralCode?: string): Promise<{ success: boolean; paymentReference: string; amount: number; message?: string; data?: { paymentLink: string; reference: string; tx_ref: string } }> {
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://cre-8-backend.vercel.app/api';
       const response = await fetch(`${API_URL}/payments/initiate-flutterwave-registration`, {
         method: 'POST',
         headers: {

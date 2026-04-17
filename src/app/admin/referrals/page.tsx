@@ -42,7 +42,7 @@ export default function ReferralStatsPage() {
   };
 
   const exportCSV = () => {
-    window.open(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/referrals/export`, '_blank');
+    window.open(`${process.env.NEXT_PUBLIC_API_URL || 'https://cre-8-backend.vercel.app/api'}/referrals/export`, '_blank');
   };
 
   if (loading) return <div className="p-8 text-center">Loading...</div>;
