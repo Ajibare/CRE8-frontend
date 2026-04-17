@@ -1,0 +1,29 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[context.production.environment]
+  NEXT_PUBLIC_API_URL = "https://your-backend-url.com/api"
+  NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY = "FLWPUBK_TEST-6e84ef8de690d84a8144cf1bb2d7b39b-X"
+
+[context.deploy-preview.environment]
+  NEXT_PUBLIC_API_URL = "https://your-backend-url.com/api"
+  NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY = "FLWPUBK_TEST-6e84ef8de690d84a8144cf1bb2d7b39b-X"
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://your-backend-url.com/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false

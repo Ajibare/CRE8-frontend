@@ -1,0 +1,7 @@
+# Flutterwave Configuration
+NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY=FLWPUBK_TEST-6e84ef8de690d84a8144cf1bb2d7b39b-X
+
+# API Configuration
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+
+# Copy this file to .env.local in your frontend directory
