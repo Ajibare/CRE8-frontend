@@ -98,12 +98,19 @@ export default function ContestantVotingPage() {
       return;
     }
 
+    // Check if contestant has submissions
+    const submissionId = contestant?.submissions?.[0]?._id;
+    if (!submissionId) {
+      alert('This contestant has no submissions available for voting yet.');
+      return;
+    }
+
     try {
       setProcessing(true);
       
       const voteData = {
         contestantId,
-        submissionId: contestant?.submissions?.[0]?._id || '',
+        submissionId,
         voteBundleType: isCustomAmount ? 'custom' : selectedBundle?.type,
         votesCount: isCustomAmount ? parseInt(customVotes) : selectedBundle?.votes,
         paymentMethod: paymentMethod,
