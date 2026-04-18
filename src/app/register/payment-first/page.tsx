@@ -31,7 +31,7 @@ export default function PaymentFirstRegistration() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [_paymentSuccessful, _setPaymentSuccessful] = useState(false);
   const [registrationData, setRegistrationData] = useState<PaymentFormData | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<'paystack' | 'flutterwave'>('paystack');
+  const [paymentMethod, setPaymentMethod] = useState<'paystack' | 'flutterwave'>('flutterwave'); // Paystack disabled for now
 
   const {
     register,
@@ -169,10 +169,11 @@ export default function PaymentFirstRegistration() {
 
         {/* Payment Method Selector */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-3 text-center">
+          {/* <label className="block text-sm font-medium text-gray-700 mb-3 text-center">
             Choose Payment Method
-          </label>
-          <div className="grid grid-cols-2 gap-3">
+          </label> */}
+          <div className="grid grid-cols-1 gap-3">
+            {/* Paystack temporarily disabled
             <button
               type="button"
               onClick={() => setPaymentMethod('paystack')}
@@ -189,6 +190,7 @@ export default function PaymentFirstRegistration() {
                 Paystack
               </span>
             </button>
+            */}
             <button
               type="button"
               onClick={() => setPaymentMethod('flutterwave')}
@@ -277,11 +279,7 @@ export default function PaymentFirstRegistration() {
           <button
             type="submit"
             disabled={isProcessing || !email}
-            className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none ${
-              paymentMethod === 'paystack'
-                ? 'bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 text-white hover:from-blue-700 hover:via-cyan-700 hover:to-blue-700'
-                : 'bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-600 text-white hover:from-violet-700 hover:via-indigo-700 hover:to-violet-700'
-            }`}
+            className="w-full py-4 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-600 text-white hover:from-violet-700 hover:via-indigo-700 hover:to-violet-700"
           >
             <span className="flex items-center justify-center">
               {isProcessing ? (
@@ -297,7 +295,7 @@ export default function PaymentFirstRegistration() {
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-6 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
-                  Pay with {paymentMethod === 'paystack' ? 'Paystack' : 'Flutterwave'}
+                  Pay with Flutterwave
                 </>
               )}
             </span>
@@ -306,7 +304,7 @@ export default function PaymentFirstRegistration() {
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            Secure payment powered by {paymentMethod === 'paystack' ? 'Paystack' : 'Flutterwave'}
+            Secure payment powered by Flutterwave
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Already paid?{' '}
