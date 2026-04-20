@@ -10,7 +10,8 @@ export default function Home() {
   const categories = [
     'Design', 'Video Editing', 'Music', 'Content Creation',
     'Photography', 'Writing', 'UI/UX Design', 'Web Design',
-    'Illustration', 'Digital Art', 'Fashion Design', 'Creative Direction', 'Advertising'
+    'Illustration', 'Digital Art', 'Fashion Design', 'Creative Direction', 'Advertising', 'Art & Craft',
+    'Business & Creative Strategist',
   ];
 
   const prizes = [

@@ -30,6 +30,8 @@ const categories = [
   { value: 'fashion-design', label: 'Fashion Design' },
   { value: 'creative-direction', label: 'Creative Direction' },
   { value: 'advertising', label: 'Advertising' },
+  { value: 'art-craft', label: 'Art & Craft' },
+  { value: 'business-creative-strategist', label: 'Business & Creative Strategist' },
 ];
 
 type SubmissionFormData = z.infer<typeof submissionSchema>;

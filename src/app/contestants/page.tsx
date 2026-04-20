@@ -41,6 +41,8 @@ export default function ContestantsPage() {
     'Fashion Design',
     'Creative Direction',
     'Advertising',
+    'Art & Craft',
+    'Business & Creative Strategist',
   ];
 
   useEffect(() => {

@@ -26,7 +26,9 @@ function LeaderboardContent() {
     'Digital Art',
     'Fashion Design',
     'Creative Direction',
-    'Advertising'
+    'Advertising',
+    'Art & Craft',
+    'Business & Creative Strategist'
   ];
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

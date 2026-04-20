@@ -31,6 +31,8 @@ const categories = [
   'Fashion Design',
   'Creative Direction',
   'Advertising',
+  'Art & Craft',
+  'Business & Creative Strategist'
 ];
 
 export default function EditSubmissionPage() {
