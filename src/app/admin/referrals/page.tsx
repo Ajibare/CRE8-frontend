@@ -83,11 +83,11 @@ export default function ReferralStatsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
           <div>
             <span className="text-gray-600">Codes with users:</span>
-            <span className="font-semibold ml-2">{stats.summary.codesWithUsers}</span>
+            <span className="font-semibold text-black ml-2">{stats.summary.codesWithUsers}</span>
           </div>
           <div>
             <span className="text-gray-600">Codes without users:</span>
-            <span className="font-semibold ml-2">{stats.summary.codesWithoutUsers}</span>
+            <span className="font-semibold text-black ml-2">{stats.summary.codesWithoutUsers}</span>
           </div>
           <div>
             <span className="text-gray-600">Top performing code:</span>
@@ -110,10 +110,10 @@ export default function ReferralStatsPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y  divide-gray-200">
               {stats.referralBreakdown.map((item) => (
                 <tr key={item.code} className={item.count > 0 ? 'bg-green-50' : ''}>
-                  <td className="px-6 py-4 whitespace-nowrap font-medium">{item.code}</td>
+                  <td className="px-6 py-4 whitespace-nowrap tetx-black font-medium">{item.code}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`font-bold ${item.count > 0 ? 'text-green-600' : 'text-gray-400'}`}>
                       {item.count}
