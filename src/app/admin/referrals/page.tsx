@@ -113,7 +113,7 @@ export default function ReferralStatsPage() {
             <tbody className="divide-y  divide-gray-200">
               {stats.referralBreakdown.map((item) => (
                 <tr key={item.code} className={item.count > 0 ? 'bg-green-50' : ''}>
-                  <td className="px-6 py-4 whitespace-nowrap tetx-black font-medium">{item.code}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black font-medium">{item.code}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`font-bold ${item.count > 0 ? 'text-green-600' : 'text-gray-400'}`}>
                       {item.count}
