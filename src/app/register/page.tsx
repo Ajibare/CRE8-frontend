@@ -11,8 +11,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Country, State } from 'country-state-city';
 import Select from 'react-select';
-import { FaWhatsapp, FaInstagram, FaTiktok, FaYoutube } from 'react-icons/fa6';
-import { Clock, CheckCircle2, ExternalLink } from 'lucide-react';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name must be less than 50 characters'),
@@ -36,15 +34,6 @@ const categories = [
 // Get all countries from country-state-city library
 const allCountries = Country.getAllCountries();
 
-const socialMediaLinks = [
-  { name: 'WhatsApp', url: 'https://chat.whatsapp.com/DXWUXqSKrU4Kuu2TPX503a', Icon: FaWhatsapp, color: 'bg-green-500' },
-  { name: 'Instagram', url: 'https://www.instagram.com/funtechglobal', Icon: FaInstagram, color: 'bg-pink-500' },
-  { name: 'TikTok', url: 'https://www.tiktok.com/@funtechglobal', Icon: FaTiktok, color: 'bg-black' },
-  { name: 'YouTube', url: 'https://www.youtube.com/@FunTechGlobal', Icon: FaYoutube, color: 'bg-red-600' },
-];
-
-const VERIFICATION_TIME = 30; // seconds user must spend on social media
-
 function RegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -57,11 +46,6 @@ function RegisterContent() {
   });
 
   const [selectedCountry, setSelectedCountry] = useState('');
-  const [activeSocialLink, setActiveSocialLink] = useState<string | null>(null);
-  const [socialTimers, setSocialTimers] = useState<Record<string, number>>({});
-  const [completedSocial, setCompletedSocial] = useState<Record<string, boolean>>({});
-  const [isVerifying, setIsVerifying] = useState(false);
-  const allSocialVerified = socialMediaLinks.every(link => completedSocial[link.name]);
 
   // Check for payment success from Flutterwave callback or verified status
   useEffect(() => {
@@ -99,26 +83,6 @@ function RegisterContent() {
     }
   }, [paymentState.email, setValue]);
 
-  // Timer effect for social media verification
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (activeSocialLink && !completedSocial[activeSocialLink]) {
-      setIsVerifying(true);
-      interval = setInterval(() => {
-        setSocialTimers(prev => {
-          const currentTime = (prev[activeSocialLink] || 0) + 1;
-          if (currentTime >= VERIFICATION_TIME) {
-            setCompletedSocial(completed => ({ ...completed, [activeSocialLink]: true }));
-            setActiveSocialLink(null);
-            setIsVerifying(false);
-            toast.success(`${activeSocialLink} verified!`, { autoClose: 2000 });
-          }
-          return { ...prev, [activeSocialLink]: currentTime };
-        });
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [activeSocialLink, completedSocial]);
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
@@ -126,7 +90,6 @@ function RegisterContent() {
       const registrationData = {
         ...data,
         referralCode: paymentState.referralCode || undefined,
-        socialVerified: allSocialVerified,
       };
       await registerUser(registrationData);
       toast.success('Registration successful! Please login to continue.', {
@@ -319,100 +282,12 @@ function RegisterContent() {
             )}
           </div>
 
-          {/* Social Media Verification Section */}
-          <div className="border-2 border-orange-200 rounded-lg p-4 bg-orange-50">
-            <h3 className="text-lg font-semibold text-black mb-2 text-center">
-              Follow Us on Social Media
-            </h3>
-            <p className="text-sm text-gray-700 mb-2 text-center">
-              Click each link, follow/like the account, and stay on the page for {VERIFICATION_TIME} seconds
-            </p>
-            <p className="text-xs text-orange-600 mb-4 text-center font-medium">
-              We verify your engagement time to ensure genuine follows
-            </p>
-
-            <div className="grid grid-cols-2 gap-3">
-              {socialMediaLinks.map((link) => {
-                const Icon = link.Icon;
-                const isCompleted = completedSocial[link.name];
-                const isActive = activeSocialLink === link.name;
-                const timer = socialTimers[link.name] || 0;
-                const progress = Math.min((timer / VERIFICATION_TIME) * 100, 100);
-
-                return (
-                  <div
-                    key={link.name}
-                    className={`flex flex-col p-3 rounded-lg transition-all ${
-                      isCompleted ? 'bg-green-100 border-2 border-green-400' :
-                      isActive ? 'bg-orange-100 border-2 border-orange-400' :
-                      'bg-white border-2 border-gray-200'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className={`p-2 rounded-lg ${link.color} text-white`}>
-                        <Icon size={20} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-black">{link.name}</p>
-                      </div>
-                      {isCompleted && <CheckCircle2 className="text-green-600" size={20} />}
-                      {isActive && <Clock className="text-orange-600 animate-pulse" size={20} />}
-                    </div>
-
-                    <a
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => !isCompleted && setActiveSocialLink(link.name)}
-                      className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition ${
-                        isCompleted
-                          ? 'bg-green-600 text-white cursor-default'
-                          : isActive
-                          ? 'bg-orange-600 text-white'
-                          : 'bg-orange-100 text-orange-700 hover:bg-orange-200'
-                      }`}
-                    >
-                      {isCompleted ? (
-                        <>Verified <CheckCircle2 size={16} /></>
-                      ) : isActive ? (
-                        <>Verifying... {timer}s <Clock size={16} className="animate-spin" /></>
-                      ) : (
-                        <>Open & Follow <ExternalLink size={16} /></>
-                      )}
-                    </a>
-
-                    {(isActive || isCompleted) && (
-                      <div className="mt-2 h-1 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full transition-all duration-1000 ${isCompleted ? 'bg-green-500' : 'bg-orange-500'}`}
-                          style={{ width: `${progress}%` }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="mt-4 text-center">
-              <p className={`text-sm font-medium ${allSocialVerified ? 'text-green-600' : 'text-gray-500'}`}>
-                {allSocialVerified
-                  ? 'All social media accounts verified! You can now proceed'
-                  : `${Object.values(completedSocial).filter(Boolean).length}/${socialMediaLinks.length} accounts verified - Complete all to continue`}
-              </p>
-            </div>
-          </div>
-
           <button
             type="submit"
-            disabled={isLoading || !allSocialVerified}
-            className={`w-full py-3 rounded-lg font-semibold transition ${
-              allSocialVerified
-                ? 'bg-orange-600 text-white hover:bg-orange-700'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
+            disabled={isLoading}
+            className="w-full py-3 rounded-lg font-semibold transition bg-orange-600 text-white hover:bg-orange-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Processing...' : allSocialVerified ? 'Proceed to Secure Your Slot' : 'Follow All Social Media to Continue'}
+            {isLoading ? 'Processing...' : 'Proceed to Secure Your Slot'}
           </button>
         </form>
 

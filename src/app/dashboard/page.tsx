@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '../../store/authStore';
+import { FaWhatsapp, FaInstagram, FaTiktok, FaYoutube } from 'react-icons/fa6';
 import { submissionService } from '../../services/submissionService';
 import { votingService } from '../../services/votingService';
 import { contestPhaseService, getPhaseDisplayText, getPhaseColor } from '../../services/contestPhaseService';
@@ -562,6 +563,50 @@ export default function UserDashboard() {
                       )}
                     </div>
                   )}
+                </div>
+              </div>
+
+              {/* Follow FUNTECH on Social Media */}
+              <div className="bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-xl p-6 border-2 border-orange-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 text-center">Follow FUNTECH</h3>
+                <p className="text-sm text-gray-600 mb-4 text-center">Stay connected with our creative community</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <a
+                    href="https://chat.whatsapp.com/DXWUXqSKrU4Kuu2TPX503a"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-3 rounded-lg bg-green-500 text-white hover:bg-green-600 transition"
+                  >
+                    <FaWhatsapp size={20} />
+                    <span className="text-sm font-medium">WhatsApp</span>
+                  </a>
+                  <a
+                    href="https://www.instagram.com/funtechglobal"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-3 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition"
+                  >
+                    <FaInstagram size={20} />
+                    <span className="text-sm font-medium">Instagram</span>
+                  </a>
+                  <a
+                    href="https://www.tiktok.com/@funtechglobal"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-3 rounded-lg bg-black text-white hover:bg-gray-800 transition"
+                  >
+                    <FaTiktok size={20} />
+                    <span className="text-sm font-medium">TikTok</span>
+                  </a>
+                  <a
+                    href="https://www.youtube.com/@FunTechGlobal"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-3 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+                  >
+                    <FaYoutube size={20} />
+                    <span className="text-sm font-medium">YouTube</span>
+                  </a>
                 </div>
               </div>
             </div>
