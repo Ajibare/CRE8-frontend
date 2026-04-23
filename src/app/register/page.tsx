@@ -21,6 +21,9 @@ const registerSchema = z.object({
   state: z.string().min(1, 'Please select a state'),
   category: z.string().min(1, 'Please select a category'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
+  businessName: z.string().optional(),
+  businessLocation: z.string().optional(),
+  businessType: z.string().optional(),
 });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -29,7 +32,8 @@ const categories = [
   'Design', 'Video Editing', 'Music', 'Content Creation',
   'Photography', 'Writing', 'UI/UX Design', 'Web Design',
   'Illustration', 'Digital Art', 'Fashion Design', 'Creative Direction', 'Advertising',
-  'Art & Craft', 'Business & Creative Strategist'
+  'Art & Craft', 'Business & Creative Strategist',
+  'Business Support Program'
 ];
 
 // Get all countries from country-state-city library
@@ -70,6 +74,7 @@ function RegisterContent() {
     handleSubmit,
     setValue,
     control,
+    watch,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -77,6 +82,9 @@ function RegisterContent() {
       email: paymentState.email,
     },
   });
+
+  // Watch category to conditionally show business fields
+  const selectedCategory = watch('category');
 
   // Update form email when payment email changes
   useEffect(() => {
@@ -268,6 +276,56 @@ function RegisterContent() {
               <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>
             )}
           </div>
+
+          {/* Business Support Program Fields */}
+          {selectedCategory === 'Business Support Program' && (
+            <>
+              <div>
+                <label htmlFor="businessName" className="block text-sm font-medium text-black mb-2">
+                  Business Name
+                </label>
+                <input
+                  type="text"
+                  {...register('businessName')}
+                  className="w-full px-4 py-3 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="Enter your business name"
+                />
+                {errors.businessName && (
+                  <p className="mt-1 text-sm text-red-600">{errors.businessName.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="businessLocation" className="block text-sm font-medium text-black mb-2">
+                  Business Location
+                </label>
+                <input
+                  type="text"
+                  {...register('businessLocation')}
+                  className="w-full px-4 py-3 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="Enter your business location"
+                />
+                {errors.businessLocation && (
+                  <p className="mt-1 text-sm text-red-600">{errors.businessLocation.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="businessType" className="block text-sm font-medium text-black mb-2">
+                  Business Type
+                </label>
+                <input
+                  type="text"
+                  {...register('businessType')}
+                  className="w-full px-4 py-3 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="e.g., Retail, Service, Manufacturing"
+                />
+                {errors.businessType && (
+                  <p className="mt-1 text-sm text-red-600">{errors.businessType.message}</p>
+                )}
+              </div>
+            </>
+          )}
 
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-black mb-2">

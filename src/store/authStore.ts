@@ -24,6 +24,11 @@ interface User {
   role: string;
   isVerified: boolean;
   isApproved: boolean;
+  // Business Support Program fields
+  businessName?: string;
+  businessLocation?: string;
+  businessType?: string;
+  businessMedia?: string;
   createdAt?: string;
   updatedAt?: string;
 }

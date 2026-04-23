@@ -93,6 +93,10 @@ export default function UserDashboard() {
   });
   const [phaseInfo, setPhaseInfo] = useState<{ phase: string; auditionStart: string; contestStart: string; contestEnd: string } | null>(null);
   const [votes, setVotes] = useState<Vote[]>([]);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isComingSoonModalOpen, setIsComingSoonModalOpen] = useState(false);
+  const [comingSoonTitle, setComingSoonTitle] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [countdown, setCountdown] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null);
@@ -540,6 +544,84 @@ export default function UserDashboard() {
                   <div className="text-sm text-gray-600">Votes Received</div>
                 </div>
                 */}
+
+                {/* Business Support Program */}
+                {user?.category === 'Business Support Program' && (
+                  <div className="bg-gradient-to-br from-blue-50 to-white rounded-2xl shadow-xl p-6 border-2 border-blue-200">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900">Business Support Program</h3>
+                        <p className="text-sm text-gray-600">{user?.businessName || 'Your Business'}</p>
+                      </div>
+                    </div>
+                    
+                    {user?.businessMedia && (
+                      <div className="mb-4 rounded-lg overflow-hidden">
+                        {user.businessMedia.endsWith('.mp4') || user.businessMedia.endsWith('.mov') ? (
+                          <video src={user.businessMedia} controls className="w-full h-48 object-cover" />
+                        ) : (
+                          <img src={user.businessMedia} alt="Business" className="w-full h-48 object-cover" />
+                        )}
+                      </div>
+                    )}
+
+                    <div className="space-y-3">
+                      <button
+                        onClick={() => {
+                          setComingSoonTitle('Business Development Resources');
+                          setIsComingSoonModalOpen(true);
+                        }}
+                        className="w-full flex items-start gap-2 p-2 rounded-lg hover:bg-blue-100 transition text-left"
+                      >
+                        <svg className="w-5 h-5 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span className="text-sm text-gray-700">Business development resources</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setComingSoonTitle('Visibility Opportunities');
+                          setIsComingSoonModalOpen(true);
+                        }}
+                        className="w-full flex items-start gap-2 p-2 rounded-lg hover:bg-blue-100 transition text-left"
+                      >
+                        <svg className="w-5 h-5 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        <span className="text-sm text-gray-700">Visibility opportunities</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setComingSoonTitle('Consideration for Support');
+                          setIsComingSoonModalOpen(true);
+                        }}
+                        className="w-full flex items-start gap-2 p-2 rounded-lg hover:bg-blue-100 transition text-left"
+                      >
+                        <svg className="w-5 h-5 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span className="text-sm text-gray-700">Consideration for support</span>
+                      </button>
+                    </div>
+
+                    {!user?.businessMedia && (
+                      <div className="mt-4">
+                        <Link
+                          href="/dashboard/edit-profile"
+                          className="block w-full text-center bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+                        >
+                          Upload Business Photo/Video
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Quick Actions */}
@@ -878,6 +960,31 @@ export default function UserDashboard() {
           )}
         </div>
       </div>
+
+      {/* Coming Soon Modal */}
+      {isComingSoonModalOpen && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">Coming Soon</h3>
+            </div>
+            <p className="text-gray-600 mb-6">
+              <span className="font-semibold text-orange-600">{comingSoonTitle}</span> will be available soon. We are working hard to bring you the best business support experience!
+            </p>
+            <button
+              onClick={() => setIsComingSoonModalOpen(false)}
+              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg"
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

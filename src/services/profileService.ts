@@ -29,6 +29,11 @@ export interface Profile {
   isVerified: boolean;
   isApproved: boolean;
   auditionStatus?: string;
+  // Business Support Program fields
+  businessName?: string;
+  businessLocation?: string;
+  businessType?: string;
+  businessMedia?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -53,6 +58,11 @@ export interface UpdateProfileData {
     linkedin?: string;
     portfolio?: string;
   };
+  // Business Support Program fields
+  businessName?: string;
+  businessLocation?: string;
+  businessType?: string;
+  businessMedia?: string;
 }
 
 export const profileService = {

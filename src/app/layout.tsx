@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "FUNTECH Creative",
   description: "Discover and celebrate creative talent from across Africa",
+  icons: {
+    icon: "https://res.cloudinary.com/dqbbm0ksb/image/upload/v1742396569/funtech%20logo_eiuqsh.png",
+    shortcut: "https://res.cloudinary.com/dqbbm0ksb/image/upload/v1742396569/funtech%20logo_eiuqsh.png",
+    apple: "https://res.cloudinary.com/dqbbm0ksb/image/upload/v1742396569/funtech%20logo_eiuqsh.png",
+  },
 };
 
 export default function RootLayout({

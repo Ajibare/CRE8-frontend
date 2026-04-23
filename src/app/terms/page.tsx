@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import { ArrowLeft, Scale, Shield, FileText, Gavel } from 'lucide-react';
+// import Link from 'next/link';
+import { Scale, Shield, FileText, Gavel } from 'lucide-react';
 
 export default function TermsPage() {
   return (
@@ -9,15 +9,15 @@ export default function TermsPage() {
       {/* Header */}
       <div className="bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-600 text-white py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <Link
+          {/* <Link
             href="/"
             className="inline-flex items-center gap-2 text-white/80 hover:text-white transition mb-4"
           >
             <ArrowLeft size={20} />
             Back to Home
-          </Link>
+          </Link> */}
           <h1 className="text-3xl sm:text-4xl font-bold mb-2">Terms, Conditions & Legal Framework</h1>
-          <p className="text-white/80">FUNTECH Platform</p>
+          {/* <p className="text-white/80">FUNTECH Platform</p> */}
         </div>
       </div>
 
@@ -173,7 +173,7 @@ export default function TermsPage() {
             Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
           <p className="text-sm text-gray-500 mt-2">
-            For questions about these terms, please contact us through our social media channels.
+            For questions about these terms, please contact us through funtechinnovations@gmail.com
           </p>
         </div>
       </div>
