@@ -215,14 +215,14 @@ export default function PaymentFirstRegistration() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Email Address *
             </label>
-            <div className="relative">
+            <div className="relative flex items-center">
               <input
                 {...register('email')}
                 type="email"
-                className="w-full px-4 py-4 border-2 border-violet-200 rounded-xl focus:ring-4 focus:ring-violet-500 focus:border-violet-500 bg-white/90 backdrop-blur-sm transition-all duration-300 text-gray-800 placeholder-gray-400"
+                className="w-full px-4 py-4 pr-12 border-2 border-violet-200 rounded-xl focus:ring-4 focus:ring-violet-500 focus:border-violet-500 bg-white/90 backdrop-blur-sm transition-all duration-300 text-gray-800 placeholder-gray-400"
                 placeholder="john@example.com"
               />
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
                 <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                 </svg>
