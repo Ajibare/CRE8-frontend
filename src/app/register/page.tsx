@@ -52,6 +52,7 @@ function RegisterContent() {
 
   const [selectedCountry, setSelectedCountry] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [registrationType, setRegistrationType] = useState<'creative' | 'business'>('creative');
 
   // Check for payment success from Flutterwave callback or verified status
   useEffect(() => {
@@ -85,6 +86,15 @@ function RegisterContent() {
 
   // Watch category to conditionally show business fields
   const selectedCategory = watch('category');
+
+  // Auto-set category when registration type changes
+  useEffect(() => {
+    if (registrationType === 'business') {
+      setValue('category', 'Business Support Program');
+    } else {
+      setValue('category', '');
+    }
+  }, [registrationType, setValue]);
 
   // Update form email when payment email changes
   useEffect(() => {
@@ -135,6 +145,59 @@ function RegisterContent() {
             </div>
           )}
         </div>
+
+        {/* Registration Type Tabs - Only show after payment */}
+        {paymentState.success && (
+          <div className="mb-6">
+            <div className="flex rounded-lg bg-gray-100 p-1">
+              <button
+                type="button"
+                onClick={() => setRegistrationType('creative')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                  registrationType === 'creative'
+                    ? 'bg-orange-600 text-white shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Creative
+              </button>
+              <button
+                type="button"
+                onClick={() => setRegistrationType('business')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                  registrationType === 'business'
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Business Support
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Sponsor Logos - Only show for Business Support */}
+        {paymentState.success && registrationType === 'business' && (
+          <div className="mb-6 flex items-center justify-center gap-4 bg-gradient-to-r from-blue-50 to-orange-50 p-4 rounded-lg">
+            <div className="flex items-center gap-2">
+              <img 
+                src="https://res.cloudinary.com/dqbbm0ksb/image/upload/v1742396569/funtech%20logo_eiuqsh.png" 
+                alt="FUNTECH" 
+                className="h-8 w-auto"
+              />
+              <span className="text-sm font-semibold text-gray-700">FUNTECH</span>
+            </div>
+            <span className="text-gray-400 font-bold">×</span>
+            <div className="flex items-center gap-2">
+              <img 
+                src="https://res.cloudinary.com/dqbbm0ksb/image/upload/v1742555502/WhatsApp_Image_2025-03-20_at_10.52.23_AM-removebg-preview.png" 
+                alt="Millionaire Club" 
+                className="h-8 w-auto"
+              />
+              <span className="text-sm font-semibold text-gray-700">Millionaire Club</span>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
@@ -257,28 +320,31 @@ function RegisterContent() {
             )}
           </div>
 
-          <div>
-            <label htmlFor="category" className="block text-sm font-medium text-black mb-2">
-              Category
-            </label>
-            <select
-              {...register('category')}
-              className="w-full px-4 py-3 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-            >
-              <option value="">Select a category</option>
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-            {errors.category && (
-              <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>
-            )}
-          </div>
+          {/* Category - Hidden for Business Support (auto-set) */}
+          {(!paymentState.success || registrationType === 'creative') && (
+            <div>
+              <label htmlFor="category" className="block text-sm font-medium text-black mb-2">
+                Category
+              </label>
+              <select
+                {...register('category')}
+                className="w-full px-4 py-3 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              >
+                <option value="">Select a category</option>
+                {categories.filter(cat => cat !== 'Business Support Program').map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+              {errors.category && (
+                <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>
+              )}
+            </div>
+          )}
 
           {/* Business Support Program Fields */}
-          {selectedCategory === 'Business Support Program' && (
+          {(selectedCategory === 'Business Support Program' || (paymentState.success && registrationType === 'business')) && (
             <>
               <div>
                 <label htmlFor="businessName" className="block text-sm font-medium text-black mb-2">
