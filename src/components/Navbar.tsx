@@ -1,17 +1,19 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import assets from '@/asset/remoteAsset';
 
-function getInitialAuthState() {
-  if (typeof window === 'undefined') return false;
-  return !!localStorage.getItem('token');
-}
-
 export default function Navbar() {
-  const [isAuthenticated, setIsAuthenticated] = useState(getInitialAuthState);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -46,7 +48,14 @@ export default function Navbar() {
             <Link href="/contestants" className="text-violet-600 hover:text-violet-700 font-medium transition-colors">
               View Contestants
             </Link>
-            {isAuthenticated ? (
+            {!mounted ? (
+              <Link
+                href="/register/payment-first"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                Register Now
+              </Link>
+            ) : isAuthenticated ? (
               <Link
                 href="/login"
                 className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
@@ -112,11 +121,11 @@ export default function Navbar() {
               View Contestants
             </Link>
             <Link
-              href={isAuthenticated ? '/login' : '/register/payment-first'}
+              href={!mounted ? '/register/payment-first' : isAuthenticated ? '/login' : '/register/payment-first'}
               className="block px-3 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {isAuthenticated ? 'Login' : 'Register Now'}
+              {!mounted ? 'Register Now' : isAuthenticated ? 'Login' : 'Register Now'}
             </Link>
           </div>
         )}

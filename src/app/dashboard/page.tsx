@@ -9,7 +9,9 @@ import { submissionService } from '../../services/submissionService';
 import { votingService } from '../../services/votingService';
 import { contestPhaseService, getPhaseDisplayText, getPhaseColor } from '../../services/contestPhaseService';
 import { formatDate } from '../../utils/dateUtils';
+import { learningService, Learning } from '../../services/learningService';
 import Image from 'next/image';
+import { FaGraduationCap, FaPlay, FaClock, FaUserTie } from 'react-icons/fa6';
 
 interface User {
   _id: string;
@@ -83,7 +85,7 @@ interface Vote {
 export default function UserDashboard() {
   const router = useRouter();
   const { user, completeRegistration } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<'overview' | 'submissions' | 'voting' | 'profile'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'submissions' | 'voting' | 'profile' | 'learning'>('overview');
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [stats, setStats] = useState({
     totalSubmissions: 0,
@@ -100,6 +102,9 @@ export default function UserDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [countdown, setCountdown] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null);
+  const [learnings, setLearnings] = useState<Learning[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   // Contest starts May 1st
   const CONTEST_START_DATE = new Date('2025-05-01T00:00:00');
@@ -129,9 +134,14 @@ export default function UserDashboard() {
 
   useEffect(() => {
     if (user) {
+      // Redirect business support users to their dedicated dashboard
+      if (user.category === 'Business Support Program') {
+        router.push('/business-dashboard');
+        return;
+      }
       fetchDashboardData();
     }
-  }, [user]);
+  }, [user, router]);
 
   const fetchDashboardData = async () => {
     try {
@@ -155,6 +165,31 @@ export default function UserDashboard() {
       console.error('Failed to fetch phase info:', error);
     }
   };
+
+  const fetchLearningData = async () => {
+    try {
+      const data = await learningService.getAllLearnings(selectedCategory || undefined);
+      setLearnings(data);
+    } catch (error) {
+      console.error('Fetch learning data error:', error);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const cats = await learningService.getCategories();
+      setCategories(cats);
+    } catch (error) {
+      console.error('Fetch categories error:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'learning') {
+      fetchLearningData();
+      fetchCategories();
+    }
+  }, [activeTab, selectedCategory]);
 
   useEffect(() => {
     if (user) {
@@ -411,6 +446,7 @@ export default function UserDashboard() {
               {[
                 { id: 'overview', label: 'Overview', icon: 'home' },
                 { id: 'submissions', label: 'My Submissions', icon: 'document' },
+                { id: 'learning', label: 'Learning', icon: 'graduation-cap' },
                 { id: 'profile', label: 'Profile', icon: 'user' }
               ].map((tab) => (
                 <button
@@ -434,6 +470,9 @@ export default function UserDashboard() {
                     )}
                     {tab.id === 'profile' && (
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 011-8 0zM12 14a7 7 0 00-7 7 7 7 0 000 14z"></path>
+                    )}
+                    {tab.id === 'learning' && (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
                     )}
                   </svg>
                   {tab.label}
@@ -772,6 +811,108 @@ export default function UserDashboard() {
                   </div>
                 )}
               </div>
+          )}
+
+          {activeTab === 'learning' && (
+            <div className="space-y-6 max-w-7xl mx-auto">
+              {/* Learning Header */}
+              <div className="bg-gradient-to-br from-purple-600 to-indigo-700 rounded-2xl shadow-xl p-6 sm:p-8 text-white">
+                <div className="flex items-center gap-4 mb-4">
+                  <FaGraduationCap className="w-8 h-8" />
+                  <h2 className="text-2xl font-bold">Learn & Grow</h2>
+                </div>
+                <p className="text-purple-100 text-lg max-w-2xl">
+                  Expand your creative skills with our curated learning resources. Master new techniques and level up your craft.
+                </p>
+              </div>
+
+              {/* Category Filter */}
+              <div className="bg-white rounded-xl shadow-md p-4">
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => setSelectedCategory('')}
+                    className={`px-4 py-2 rounded-lg font-medium transition ${
+                      !selectedCategory
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    All Categories
+                  </button>
+                  {categories.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      className={`px-4 py-2 rounded-lg font-medium transition ${
+                        selectedCategory === category
+                          ? 'bg-purple-600 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Learning Resources Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {learnings.length > 0 ? (
+                  learnings.map((learning) => (
+                    <div
+                      key={learning._id}
+                      className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer group"
+                      onClick={() => router.push(`/learning/${learning._id}`)}
+                    >
+                      {/* Thumbnail */}
+                      <div className="relative aspect-video bg-gray-900 overflow-hidden">
+                        {learning.thumbnailUrl ? (
+                          <img
+                            src={learning.thumbnailUrl}
+                            alt={learning.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-indigo-600">
+                            <FaGraduationCap className="w-16 h-16 text-white opacity-50" />
+                          </div>
+                        )}
+                        {/* Play Button Overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 group-hover:bg-opacity-40 transition">
+                          <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition">
+                            <FaPlay className="w-6 h-6 text-purple-600 ml-1" />
+                          </div>
+                        </div>
+                        {/* Duration Badge */}
+                        <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded text-sm flex items-center gap-1">
+                          <FaClock className="w-3 h-3" />
+                          {learning.duration} min
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-4">
+                        <span className="inline-block px-2 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded mb-2">
+                          {learning.category}
+                        </span>
+                        <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">{learning.title}</h3>
+                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{learning.description}</p>
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <FaUserTie className="w-4 h-4" />
+                          <span>{learning.instructor}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-12 bg-white rounded-xl shadow-md">
+                    <FaGraduationCap className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">No learning resources yet</h3>
+                    <p className="text-gray-500">Check back soon for new courses and tutorials!</p>
+                  </div>
+                )}
+              </div>
+            </div>
           )}
 
           {activeTab === 'profile' && (

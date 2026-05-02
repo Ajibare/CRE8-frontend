@@ -111,4 +111,14 @@ export const profileService = {
     const response = await api.get(`/profile/${userId}`);
     return response.data.user;
   },
+
+  // Upload business video
+  async uploadBusinessVideo(formData: FormData): Promise<string> {
+    const response = await api.post('/profile/me/business-video', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data.businessMedia;
+  },
 };
