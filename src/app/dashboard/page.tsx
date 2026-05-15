@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '../../store/authStore';
 import { FaWhatsapp, FaInstagram, FaTiktok, FaYoutube } from 'react-icons/fa6';
+import { FaFacebook as FaFacebookIcon, FaTwitter as FaTwitterIcon } from 'react-icons/fa';
 import { submissionService } from '../../services/submissionService';
 import { votingService } from '../../services/votingService';
 import { contestPhaseService, getPhaseDisplayText, getPhaseColor } from '../../services/contestPhaseService';
@@ -32,6 +33,13 @@ interface User {
     twitter?: string;
     linkedin?: string;
     portfolio?: string;
+  };
+  socialFollowStatus?: {
+    instagram: boolean;
+    facebook: boolean;
+    twitter: boolean;
+    tiktok: boolean;
+    youtube: boolean;
   };
   createdAt: string;
   updatedAt: string;
@@ -105,6 +113,7 @@ export default function UserDashboard() {
   const [learnings, setLearnings] = useState<Learning[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [isSocialFollowModalOpen, setIsSocialFollowModalOpen] = useState(false);
 
   // Contest starts May 1st
   const CONTEST_START_DATE = new Date('2025-05-01T00:00:00');
@@ -130,6 +139,31 @@ export default function UserDashboard() {
 
   const isContestStarted = () => {
     return new Date() >= CONTEST_START_DATE;
+  };
+
+  // const checkSocialFollowStatus = () => {
+  //   if (!user?.socialFollowStatus) {
+  //     return false;
+  //   }
+  //   const { instagram, facebook, twitter, tiktok, youtube } = user.socialFollowStatus;
+  //   // Require all social platforms to be followed
+  //   return instagram && facebook && twitter && tiktok && youtube;
+  // };
+
+  const checkSocialFollowStatus = () => {
+  // Use optional chaining and type assertion
+  const socialFollowStatus = (user as any)?.socialFollowStatus;
+  if (!socialFollowStatus) return false;
+  const { instagram, facebook, twitter, tiktok, youtube } = socialFollowStatus;
+  return instagram && facebook && twitter && tiktok && youtube;
+};
+
+  const handleSubmitWorkClick = () => {
+    if (!checkSocialFollowStatus()) {
+      setIsSocialFollowModalOpen(true);
+    } else {
+      router.push('/submissions/submit');
+    }
   };
 
   useEffect(() => {
@@ -416,12 +450,12 @@ export default function UserDashboard() {
                   )}
                 </div>
                 {isContestStarted() ? (
-                  <Link
-                    href="/submissions/submit"
+                  <button
+                    onClick={handleSubmitWorkClick}
                     className="px-3 py-1.5 bg-white rounded-lg text-xs font-medium hover:bg-gray-50 transition"
                   >
                     Submit Work
-                  </Link>
+                  </button>
                 ) : (
                   <div className="text-xs text-center">
                     {countdown && (
@@ -867,7 +901,7 @@ export default function UserDashboard() {
                       {/* Thumbnail */}
                       <div className="relative aspect-video bg-gray-900 overflow-hidden">
                         {learning.thumbnailUrl ? (
-                          <img
+                          <Image
                             src={learning.thumbnailUrl}
                             alt={learning.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition"
@@ -1122,6 +1156,93 @@ export default function UserDashboard() {
               className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg"
             >
               Got it!
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Social Follow Required Modal */}
+      {isSocialFollowModalOpen && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 transform transition-all">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">Follow Us on Social Media</h3>
+            </div>
+            <p className="text-gray-600 mb-6">
+              Before you can submit your work, please follow us on all our social media platforms to stay updated with the latest news and announcements.
+            </p>
+            <div className="space-y-3 mb-6">
+              <a
+                href="https://www.instagram.com/funtechglobal"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg hover:from-pink-100 hover:to-purple-100 transition"
+              >
+                <FaInstagram className="w-6 h-6 text-pink-600" />
+                <span className="font-medium text-gray-900">Instagram</span>
+                <svg className="w-5 h-5 ml-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+              </a>
+              <a
+                href="https://www.facebook.com/funtechglobal"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg hover:from-blue-100 hover:to-blue-200 transition"
+              >
+                <FaFacebookIcon className="w-6 h-6 text-blue-600" />
+                <span className="font-medium text-gray-900">Facebook</span>
+                <svg className="w-5 h-5 ml-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+              </a>
+              <a
+                href="https://www.twitter.com/funtechglobal"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 bg-gradient-to-r from-sky-50 to-sky-100 rounded-lg hover:from-sky-100 hover:to-sky-200 transition"
+              >
+                <FaTwitterIcon className="w-6 h-6 text-sky-500" />
+                <span className="font-medium text-gray-900">Twitter</span>
+                <svg className="w-5 h-5 ml-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+              </a>
+              <a
+                href="https://www.tiktok.com/@funtechglobal"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg hover:from-gray-100 hover:to-gray-200 transition"
+              >
+                <FaTiktok className="w-6 h-6 text-gray-900" />
+                <span className="font-medium text-gray-900">TikTok</span>
+                <svg className="w-5 h-5 ml-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+              </a>
+              <a
+                href="https://www.youtube.com/@funtechglobal"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 bg-gradient-to-r from-red-50 to-red-100 rounded-lg hover:from-red-100 hover:to-red-200 transition"
+              >
+                <FaYoutube className="w-6 h-6 text-red-600" />
+                <span className="font-medium text-gray-900">YouTube</span>
+                <svg className="w-5 h-5 ml-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+              </a>
+            </div>
+            <button
+              onClick={() => setIsSocialFollowModalOpen(false)}
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg"
+            >
+              I&apos;ve Followed All Platforms
             </button>
           </div>
         </div>
