@@ -145,12 +145,12 @@ export default function ContestsPage() {
                 </h1>
                 <p className="text-gray-600 mt-1">Discover and participate in amazing creative challenges</p>
               </div>
-              <Link
-                href="/register/payment-first"
-                className="bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-violet-700 hover:via-indigo-700 hover:to-violet-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                Join Contest
-              </Link>
+               <Link
+                 href="/register?type=creative"
+                 className="bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-violet-700 hover:via-indigo-700 hover:to-violet-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+               >
+                 Join Contest
+               </Link>
             </div>
           </div>
         </div>

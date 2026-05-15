@@ -2,10 +2,13 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from 'react';
 import { assets } from '../asset/remoteAsset';
 import { FaWhatsapp, FaInstagram, FaTiktok, FaYoutube, FaTwitter, FaLinkedin } from 'react-icons/fa6';
+import RegisterTypeModal from '../components/RegisterTypeModal';
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const categories = [
     'Design', 'Video Editing', 'Music', 'Content Creation',
@@ -21,7 +24,7 @@ export default function Home() {
   ];
 
   const howItWorks = [
-    { step: 1, title: 'Register', description: 'Pay 2,000 and secure your Creative ID.' },
+    { step: 1, title: 'Register', description: 'Sign up for FREE and secure your Creative ID.' },
     { step: 2, title: 'Get Auditioned', description: 'Submit your audition video .' },
     { step: 3, title: 'Compete Weekly', description: 'Take on creative challenges.' },
     { step: 4, title: 'Get Votes & Rank', description: 'Build support and climb.' },
@@ -115,12 +118,12 @@ export default function Home() {
               >
                 View Contests
               </Link> */}
-              <Link
-                href="/register/payment-first"
+              <button
+                onClick={() => setIsModalOpen(true)}
                 className="bg-white text-violet-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border-2 border-violet-600"
               >
                 Register Now
-              </Link>
+              </button>
             </div>
             {/* <Link href="#how-it-works" className="border-2 border-purple-300 text-purple-600 px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-purple-50 transition-all duration-300">
               Learn More
@@ -190,9 +193,9 @@ export default function Home() {
           <p className="text-xl text-indigo-100 mb-12 max-w-2xl mx-auto">
             This is not just a contest. This is a platform for discovery.
           </p>
-          <Link href="/register/payment-first" className="bg-white text-indigo-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition">
-            Register for 2,000
-          </Link>
+          <button onClick={() => setIsModalOpen(true)} className="bg-white text-indigo-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition">
+            Register Now
+          </button>
         </div>
       </section>
 
@@ -233,6 +236,9 @@ export default function Home() {
           </div>
         </div>
       </footer> */}
+      
+      {/* Register Type Modal */}
+      <RegisterTypeModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

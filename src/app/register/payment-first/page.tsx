@@ -23,6 +23,7 @@ type PaymentFormData = z.infer<typeof paymentSchema>;
 
 export default function PaymentFirstRegistration() {
   const router = useRouter();
+  const [registrationType, setRegistrationType] = useState<'creative' | 'business'>('business');
   const [step, setStep] = useState(1);
   const [referralValid, setReferralValid] = useState(false);
   const [referrerName, setReferrerName] = useState('');
@@ -44,6 +45,14 @@ export default function PaymentFirstRegistration() {
 
   const email = watch('email');
   const referralCode = watch('referralCode');
+
+  // Handle registration type change
+  const handleRegistrationTypeChange = (type: 'creative' | 'business') => {
+    setRegistrationType(type);
+    if (type === 'creative') {
+      router.push('/register');
+    }
+  };
 
 
   // Validate referral code
@@ -166,6 +175,61 @@ export default function PaymentFirstRegistration() {
           </h2>
           <p className="text-gray-600 text-lg">Unlock your creative journey with secure payment</p>
         </div>
+
+        {/* Registration Type Tabs */}
+        <div className="mb-6">
+          <div className="flex rounded-lg bg-gray-100 p-1">
+            <button
+              type="button"
+              onClick={() => handleRegistrationTypeChange('creative')}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                registrationType === 'creative'
+                  ? 'bg-orange-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Creative (FREE)
+            </button>
+            <button
+              type="button"
+              onClick={() => handleRegistrationTypeChange('business')}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                registrationType === 'business'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Business Support (₦2,000)
+            </button>
+          </div>
+        </div>
+
+        {/* Sponsor Logos - Show for Business Support */}
+        {registrationType === 'business' && (
+          <div className="mb-6 flex items-center justify-center gap-4 bg-gradient-to-r from-blue-50 to-orange-50 p-4 rounded-lg">
+            <div className="flex items-center gap-2">
+              <Image 
+                src={assets.funtech_logo} 
+                alt="FUNTECH" 
+                width={100}
+                height={100}
+                className="h-8 w-auto"
+              />
+              {/* <span className="text-sm font-semibold text-gray-700">FUNTECH</span> */}
+            </div>
+            <span className="text-gray-400 font-bold">X</span>
+            <div className="flex items-center gap-2">
+              <Image
+                src={assets.millioniara_club_logo} 
+                alt="Millionaire Club" 
+                width={100}
+                height={100}
+                className="h-20 w-auto"
+              />
+              {/* <span className="text-sm font-semibold text-gray-700">Millionaire Club</span> */}
+            </div>
+          </div>
+        )}
 
         {/* Payment Method Selector */}
         <div className="mb-6">
@@ -321,7 +385,7 @@ export default function PaymentFirstRegistration() {
     const [formData, setFormData] = useState({
       name: '',
       phone: '',
-      category: '',
+      category: 'Business Support Program', // fixed for business
       country: '',
       state: '',
       city: '',
@@ -332,6 +396,9 @@ export default function PaymentFirstRegistration() {
       education: '',
       skills: '',
       portfolio: '',
+      businessName: '',
+      businessLocation: '',
+      businessType: '',
       socialLinks: {
         instagram: '',
         twitter: '',
@@ -341,13 +408,6 @@ export default function PaymentFirstRegistration() {
         linkedin: '',
       },
     });
-
-    const categories = [
-      'Design', 'Video Editing', 'Music', 'Content Creation',
-      'Photography', 'Writing', 'UI/UX Design', 'Web Design',
-      'Illustration', 'Digital Art', 'Fashion Design', 'Creative Direction', 'Advertising',
-      'Art & Craft', 'Business & Creative Strategist'
-    ];
 
     const countries = [
       'Nigeria', 'Ghana', 'Kenya', 'South Africa', 'United States', 'United Kingdom', 'Canada', 'Other'
@@ -399,21 +459,6 @@ export default function PaymentFirstRegistration() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Creative Category *</label>
-                  <select
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                    value={formData.category}
-                    onChange={(e) => setFormData({...formData, category: e.target.value})}
-                  >
-                    <option value="">Select a category</option>
-                    {categories.map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Country *</label>
                   <select
                     required
@@ -451,10 +496,47 @@ export default function PaymentFirstRegistration() {
                     onChange={(e) => setFormData({...formData, city: e.target.value})}
                   />
                 </div>
-              </div>
+               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+               {/* Business Support Program fields */}
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-2">Business Name *</label>
+                 <input
+                   type="text"
+                   required
+                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                   placeholder="Enter your business name"
+                   value={formData.businessName}
+                   onChange={(e) => setFormData({...formData, businessName: e.target.value})}
+                 />
+               </div>
+
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-2">Business Location *</label>
+                 <input
+                   type="text"
+                   required
+                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                   placeholder="Enter your business location"
+                   value={formData.businessLocation}
+                   onChange={(e) => setFormData({...formData, businessLocation: e.target.value})}
+                 />
+               </div>
+
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-2">Business Type *</label>
+                 <input
+                   type="text"
+                   required
+                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                   placeholder="e.g., Retail, Service, Manufacturing"
+                   value={formData.businessType}
+                   onChange={(e) => setFormData({...formData, businessType: e.target.value})}
+                 />
+               </div>
+
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
                 <textarea
                   rows={3}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"

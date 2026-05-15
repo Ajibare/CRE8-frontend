@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuthStore } from '../../store/authStore';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,6 +13,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Country, State } from 'country-state-city';
 import Select from 'react-select';
+import { assets } from '@/asset/remoteAsset';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name must be less than 50 characters'),
@@ -61,9 +63,15 @@ function RegisterContent() {
     const email = searchParams.get('email');
     const ref = searchParams.get('ref');
     const referralCode = searchParams.get('referralCode');
+    const type = searchParams.get('type');
 
     if ((payment === 'success' || verified === 'true') && email) {
       setPaymentState({ success: true, email, ref: ref || '', referralCode: referralCode || '' });
+    }
+
+    // Auto-set registration type based on URL parameter
+    if (type === 'business') {
+      setRegistrationType('business');
     }
   }, [searchParams]);
 
@@ -91,10 +99,14 @@ function RegisterContent() {
   useEffect(() => {
     if (registrationType === 'business') {
       setValue('category', 'Business Support Program');
+      // Redirect to payment if business support selected without payment
+      if (!paymentState.success) {
+        router.push('/register/payment-first');
+      }
     } else {
       setValue('category', '');
     }
-  }, [registrationType, setValue]);
+  }, [registrationType, setValue, paymentState.success, router]);
 
   // Update form email when payment email changes
   useEffect(() => {
@@ -134,6 +146,15 @@ function RegisterContent() {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
         <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <Image
+              src={assets.funtech_logo}
+              alt="FUNTECH Creative"
+              width={100}
+              height={100}
+              className="h-20 w-auto"
+            />
+          </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Enter the FUNTECH Creative Challenge</h2>
           <p className="text-gray-600">Register to compete and win amazing prizes</p>
           
@@ -146,8 +167,8 @@ function RegisterContent() {
           )}
         </div>
 
-        {/* Registration Type Tabs - Only show after payment */}
-        {paymentState.success && (
+        {/* Registration Type Tabs - Show for free creative signup or after payment */}
+        {paymentState.success || !paymentState.success ? (
           <div className="mb-6">
             <div className="flex rounded-lg bg-gray-100 p-1">
               <button
@@ -159,7 +180,7 @@ function RegisterContent() {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                Creative
+                Creative (FREE)
               </button>
               <button
                 type="button"
@@ -170,28 +191,32 @@ function RegisterContent() {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                Business Support
+                Business Support (₦2,000)
               </button>
             </div>
           </div>
-        )}
+        ) : null}
 
-        {/* Sponsor Logos - Only show for Business Support */}
-        {paymentState.success && registrationType === 'business' && (
+        {/* Sponsor Logos - Show for Business Support */}
+        {registrationType === 'business' && (
           <div className="mb-6 flex items-center justify-center gap-4 bg-gradient-to-r from-blue-50 to-orange-50 p-4 rounded-lg">
             <div className="flex items-center gap-2">
-              <img 
-                src="https://res.cloudinary.com/dqbbm0ksb/image/upload/v1742396569/funtech%20logo_eiuqsh.png" 
+              <Image 
+                src={assets.funtech_logo} 
                 alt="FUNTECH" 
+                width={100}
+                height={100}
                 className="h-8 w-auto"
               />
               <span className="text-sm font-semibold text-gray-700">FUNTECH</span>
             </div>
             <span className="text-gray-400 font-bold">×</span>
             <div className="flex items-center gap-2">
-              <img 
-                src="https://res.cloudinary.com/dqbbm0ksb/image/upload/v1742555502/WhatsApp_Image_2025-03-20_at_10.52.23_AM-removebg-preview.png" 
+              <Image 
+                src={assets.millioniara_club_logo} 
                 alt="Millionaire Club" 
+                width={100}
+                height={100}
                 className="h-8 w-auto"
               />
               <span className="text-sm font-semibold text-gray-700">Millionaire Club</span>

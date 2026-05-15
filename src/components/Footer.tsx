@@ -39,11 +39,11 @@ export default function Footer() {
                   View Contestants
                 </Link>
               </li>
-              <li>
-                <Link href="/register/payment-first" className="text-gray-400 hover:text-white transition-colors">
-                  Register
-                </Link>
-              </li>
+               <li>
+                 <Link href="/register" className="text-gray-400 hover:text-white transition-colors">
+                   Register
+                 </Link>
+               </li>
               <li>
                 <Link href="/login" className="text-gray-400 hover:text-white transition-colors">
                   Login

@@ -4,10 +4,12 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import assets from '@/asset/remoteAsset';
+import RegisterTypeModal from './RegisterTypeModal';
 
 export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -49,12 +51,12 @@ export default function Navbar() {
               View Contestants
             </Link>
             {!mounted ? (
-              <Link
-                href="/register/payment-first"
+              <button
+                onClick={() => setIsModalOpen(true)}
                 className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
               >
                 Register Now
-              </Link>
+              </button>
             ) : isAuthenticated ? (
               <Link
                 href="/login"
@@ -63,12 +65,12 @@ export default function Navbar() {
                 Login
               </Link>
             ) : (
-              <Link
-                href="/register/payment-first"
+              <button
+                onClick={() => setIsModalOpen(true)}
                 className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
               >
                 Register Now
-              </Link>
+              </button>
             )}
           </div>
 
@@ -120,16 +122,21 @@ export default function Navbar() {
             >
               View Contestants
             </Link>
-            <Link
-              href={!mounted ? '/register/payment-first' : isAuthenticated ? '/login' : '/register/payment-first'}
-              className="block px-3 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-              onClick={() => setIsMobileMenuOpen(false)}
+            <button
+              onClick={() => {
+                setIsModalOpen(true);
+                setIsMobileMenuOpen(false);
+              }}
+              className="block w-full text-left px-3 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
             >
               {!mounted ? 'Register Now' : isAuthenticated ? 'Login' : 'Register Now'}
-            </Link>
+            </button>
           </div>
         )}
       </div>
+      
+      {/* Register Type Modal */}
+      <RegisterTypeModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </nav>
   );
 }
