@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,6 +23,7 @@ type PaymentFormData = z.infer<typeof paymentSchema>;
 
 export default function PaymentFirstRegistration() {
   const router = useRouter();
+  const [registrationClosed, setRegistrationClosed] = useState(false);
   const [registrationType, setRegistrationType] = useState<'creative' | 'business'>('business');
   const [step, setStep] = useState(1);
   const [referralValid, setReferralValid] = useState(false);
@@ -45,6 +46,13 @@ export default function PaymentFirstRegistration() {
 
   const email = watch('email');
   const referralCode = watch('referralCode');
+
+  // Check registration deadline
+  useEffect(() => {
+    const registrationDeadline = new Date('2026-04-30T22:59:00Z');
+    const now = new Date();
+    setRegistrationClosed(now > registrationDeadline);
+  }, []);
 
   // Handle registration type change
   const handleRegistrationTypeChange = (type: 'creative' | 'business') => {
@@ -174,9 +182,18 @@ export default function PaymentFirstRegistration() {
             FUNTECH Creative Challenge
           </h2>
           <p className="text-gray-600 text-lg">Unlock your creative journey with secure payment</p>
+
+          {registrationClosed && (
+            <div className="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              <p className="font-bold">Registration Closed</p>
+              <p className="text-sm">Registration has ended. The deadline was April 30, 2026 at 11:59pm.</p>
+            </div>
+          )}
         </div>
 
         {/* Registration Type Tabs */}
+        {!registrationClosed && (
+          <>
         <div className="mb-6">
           <div className="flex rounded-lg bg-gray-100 p-1">
             <button
@@ -365,6 +382,8 @@ export default function PaymentFirstRegistration() {
             </span>
           </button>
         </form>
+        </>
+        )}
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">

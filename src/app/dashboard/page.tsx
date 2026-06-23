@@ -115,8 +115,8 @@ export default function UserDashboard() {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [isSocialFollowModalOpen, setIsSocialFollowModalOpen] = useState(false);
 
-  // Contest starts May 1st
-  const CONTEST_START_DATE = new Date('2025-05-01T00:00:00');
+  // Contest starts May 1st, 2026
+  const CONTEST_START_DATE = new Date('2026-05-01T00:00:00');
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -580,6 +580,27 @@ export default function UserDashboard() {
                 </div>
               </div>
 
+              {/* Course Videos Banner */}
+              <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 rounded-2xl shadow-xl p-6 text-white">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                      <FaGraduationCap className="w-8 h-8" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold mb-1">Course Videos</h3>
+                      <p className="text-purple-100 text-sm">Learn new skills with our video tutorials</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('learning')}
+                    className="bg-white text-purple-600 px-6 py-2.5 rounded-xl font-semibold hover:bg-purple-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                  >
+                    Watch Now
+                  </button>
+                </div>
+              </div>
+
               {/* Quick Stats */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 text-center">
@@ -701,6 +722,12 @@ export default function UserDashboard() {
               <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
                 <div className="grid grid-cols-1 gap-4">
+                  <button
+                    onClick={() => setActiveTab('learning')}
+                    className="bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-700 hover:via-pink-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-center"
+                  >
+                    🎓 View Course Videos
+                  </button>
                   {isContestStarted() ? (
                     <Link
                       href="/submissions/submit"

@@ -196,10 +196,10 @@ export default function ContestantVotingPage() {
                   </span>
                 </div>
               </div>
-              <div className="md:ml-auto text-center">
+              {/* <div className="md:ml-auto text-center">
                 <div className="text-4xl font-bold">{contestant.totalVotes.toLocaleString()}</div>
                 <div className="text-violet-100">Total Votes</div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -230,12 +230,12 @@ export default function ContestantVotingPage() {
                     <h3 className="font-semibold text-lg mb-1">{submission.title}</h3>
                     <p className="text-gray-600 text-sm mb-3 line-clamp-2">{submission.description}</p>
                     <div className="flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
+                      {/* <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
                         </svg>
                         {submission.votes} votes
-                      </span>
+                      </span> */}
                       <span className="text-sm text-gray-500">
                         {new Date(submission.submittedAt).toLocaleDateString()}
                       </span>

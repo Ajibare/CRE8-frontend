@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { FaPalette, FaBriefcase, FaXmark } from 'react-icons/fa6';
+import { useState, useEffect } from 'react';
 
 interface RegisterTypeModalProps {
   isOpen: boolean;
@@ -10,6 +11,14 @@ interface RegisterTypeModalProps {
 
 export default function RegisterTypeModal({ isOpen, onClose }: RegisterTypeModalProps) {
   const router = useRouter();
+  const [registrationClosed, setRegistrationClosed] = useState(false);
+
+  useEffect(() => {
+    // Check registration deadline - April 30, 2026 at 11:59pm UTC+01:00 (22:59 UTC)
+    const registrationDeadline = new Date('2026-04-30T22:59:00Z');
+    const now = new Date();
+    setRegistrationClosed(now > registrationDeadline);
+  }, []);
 
   if (!isOpen) return null;
 
@@ -40,8 +49,20 @@ export default function RegisterTypeModal({ isOpen, onClose }: RegisterTypeModal
           <p className="text-gray-600">Select the type of registration that suits you</p>
         </div>
 
-        {/* Options */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Registration Closed Message */}
+        {registrationClosed ? (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Registration Closed</h3>
+            <p className="text-gray-600">Registration has ended. The deadline was April 30, 2026 at 11:59pm.</p>
+          </div>
+        ) : (
+          /* Options */
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Creative Option */}
           <button
             onClick={handleCreativeClick}
@@ -84,6 +105,7 @@ export default function RegisterTypeModal({ isOpen, onClose }: RegisterTypeModal
             </div>
           </button>
         </div>
+        )}
 
         {/* Footer note */}
         <div className="mt-6 text-center text-sm text-gray-500">

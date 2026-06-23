@@ -153,14 +153,14 @@ export default function ContestantsPage() {
                     <th className="px-6 py-4 text-left font-semibold">Category</th>
                     <th className="px-6 py-4 text-left font-semibold">Location</th>
                     <th className="px-6 py-4 text-center font-semibold">Submissions</th>
-                    <th className="px-6 py-4 text-center font-semibold">Votes</th>
+                    {/* <th className="px-6 py-4 text-center font-semibold">Votes</th> */}
                     <th className="px-6 py-4 text-center font-semibold">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {filteredContestants.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                      <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                         No contestants found
                       </td>
                     </tr>
@@ -199,14 +199,14 @@ export default function ContestantsPage() {
                             {contestant.submissionCount}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        {/* <td className="px-6 py-4 text-center">
                           <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-bold">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                               <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
                             </svg>
                             {contestant.totalVotes.toLocaleString()}
                           </span>
-                        </td>
+                        </td> */}
                         <td className="px-6 py-4 text-center">
                           <Link
                             href={`/contestants/${contestant._id}`}

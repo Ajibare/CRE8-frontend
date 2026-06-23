@@ -45,6 +45,7 @@ function RegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { register: registerUser, isLoading } = useAuthStore();
+  const [registrationClosed, setRegistrationClosed] = useState(false);
   const [paymentState, setPaymentState] = useState({
     success: false,
     email: '',
@@ -73,6 +74,11 @@ function RegisterContent() {
     if (type === 'business') {
       setRegistrationType('business');
     }
+
+    // Check registration deadline - April 30, 2026 at 11:59pm UTC+01:00 (22:59 UTC)
+    const registrationDeadline = new Date('2026-04-30T22:59:00Z');
+    const now = new Date();
+    setRegistrationClosed(now > registrationDeadline);
   }, [searchParams]);
 
   // Don't auto-redirect - let user complete registration with paid email
@@ -157,7 +163,14 @@ function RegisterContent() {
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Enter the FUNTECH Creative Challenge</h2>
           <p className="text-gray-600">Register to compete and win amazing prizes</p>
-          
+
+          {registrationClosed && (
+            <div className="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              <p className="font-bold">Registration Closed</p>
+              <p className="text-sm">Registration has ended. The deadline was April 30, 2026 at 11:59pm.</p>
+            </div>
+          )}
+
           {paymentState.success && (
             <div className="mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
               <p className="font-bold">Payment Successful!</p>
@@ -168,7 +181,7 @@ function RegisterContent() {
         </div>
 
         {/* Registration Type Tabs - Show for free creative signup or after payment */}
-        {paymentState.success || !paymentState.success ? (
+        {!registrationClosed && (paymentState.success || !paymentState.success) ? (
           <div className="mb-6">
             <div className="flex rounded-lg bg-gray-100 p-1">
               <button
