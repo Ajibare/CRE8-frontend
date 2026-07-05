@@ -52,7 +52,7 @@ export default function ContestantVotingPage() {
   const [processing, setProcessing] = useState(false);
   const [customVotes, setCustomVotes] = useState('');
   const [isCustomAmount, setIsCustomAmount] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'paystack' | 'flutterwave'>('paystack');
+  const [paymentMethod, setPaymentMethod] = useState<'paystack' | 'flutterwave' | 'manual'>('paystack');
 
   useEffect(() => {
     if (contestantId) {
@@ -251,7 +251,7 @@ export default function ContestantVotingPage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Vote for {contestant.name}</h2>
             <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 sticky top-24">
               <p className="text-gray-600 mb-6">
-                Support {contestant.name} by purchasing votes. Each vote costs ₦100. Select a bundle below:
+                Support {contestant.name} by purchasing votes. Each vote costs ₦200. Select a bundle below:
               </p>
 
               {/* Vote Bundles */}
@@ -260,10 +260,10 @@ export default function ContestantVotingPage() {
                   // Default bundles matching backend bundle keys
                   <>
                     {[
-                      { _id: '1', type: 'single', name: '1 Vote', votes: 1, price: 100, description: 'Basic support' },
-                      { _id: '2', type: 'bundle_5', name: '5 Votes', votes: 5, price: 500, description: 'Show some love' },
-                      { _id: '3', type: 'bundle_10', name: '10 Votes', votes: 10, price: 1000, description: 'Great support' },
-                      { _id: '4', type: 'bundle_25', name: '25 Votes', votes: 25, price: 2500, description: 'Super fan package' },
+                      { _id: '1', type: 'single', name: '1 Vote', votes: 1, price: 200, description: 'Basic support' },
+                      { _id: '2', type: 'bundle_5', name: '5 Votes', votes: 5, price: 1000, description: 'Show some love' },
+                      { _id: '3', type: 'bundle_10', name: '10 Votes', votes: 10, price: 2000, description: 'Great support' },
+                      { _id: '4', type: 'bundle_25', name: '25 Votes', votes: 25, price: 5000, description: 'Super fan package' },
                     ].map((bundle) => (
                       <button
                         key={bundle._id}
@@ -341,7 +341,7 @@ export default function ContestantVotingPage() {
                       className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-violet-500 focus:border-transparent"
                     />
                     <p className="text-sm text-gray-500">
-                      Total: ₦{(parseInt(customVotes || '0') * 100).toLocaleString()} ({customVotes || 0} votes × ₦100)
+                      Total: ₦{(parseInt(customVotes || '0') * 200).toLocaleString()} ({customVotes || 0} votes × ₦200)
                     </p>
                   </div>
                 )}
@@ -350,7 +350,7 @@ export default function ContestantVotingPage() {
               {/* Payment Method */}
               <div className="mb-6 border-t pt-6">
                 <h3 className="font-semibold text-gray-900 mb-3">Payment Method</h3>
-                <div className="flex gap-4">
+                <div className="flex gap-4 mb-4">
                   <button
                     onClick={() => setPaymentMethod('paystack')}
                     className={`flex-1 p-4 rounded-xl border-2 text-center transition-all ${
@@ -374,20 +374,72 @@ export default function ContestantVotingPage() {
                     <div className="text-sm text-gray-500">Card, Bank, Mobile Money</div>
                   </button>
                 </div>
+                <button
+                  onClick={() => setPaymentMethod('manual')}
+                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                    paymentMethod === 'manual'
+                      ? 'border-violet-500 bg-violet-50'
+                      : 'border-gray-200 hover:border-violet-300'
+                  }`}
+                >
+                  <div className="font-semibold text-gray-900">Bank Transfer (Manual)</div>
+                  <div className="text-sm text-gray-500">Transfer directly to our bank account</div>
+                </button>
               </div>
 
-              {/* Vote Button */}
-              <button
-                onClick={handleVote}
-                disabled={processing || (!selectedBundle && !isCustomAmount) || (isCustomAmount && (!customVotes || parseInt(customVotes) < 1))}
-                className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:from-violet-700 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {processing ? 'Processing...' : `Vote with ${paymentMethod === 'paystack' ? 'Paystack' : 'Flutterwave'}`}
-              </button>
+              {/* Manual Payment Details */}
+              {paymentMethod === 'manual' && (
+                <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                  <h4 className="font-semibold text-gray-900 mb-4">Bank Account Details</h4>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Bank:</span>
+                      <span className="font-semibold text-gray-900">Zenith Bank</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Account Number:</span>
+                      <span className="font-semibold text-gray-900">1311024233</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Account Name:</span>
+                      <span className="font-semibold text-gray-900">Fun-tech innovations</span>
+                    </div>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-blue-200">
+                    <p className="text-sm text-gray-600 mb-3">
+                      After making the transfer, send your payment proof to our Telegram:
+                    </p>
+                    <a
+                      href="https://t.me/funtechinnovationsglobal"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all"
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                      </svg>
+                      Send Payment Proof on Telegram
+                    </a>
+                  </div>
+                </div>
+              )}
 
-              <p className="text-center text-sm text-gray-500 mt-4">
-                Secure payment powered by {paymentMethod === 'paystack' ? 'Paystack' : 'Flutterwave'}
-              </p>
+              {/* Vote Button */}
+              {paymentMethod !== 'manual' && (
+                <>
+                  <button
+                    onClick={handleVote}
+                    disabled={processing || (!selectedBundle && !isCustomAmount) || (isCustomAmount && (!customVotes || parseInt(customVotes) < 1))}
+                    className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:from-violet-700 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {processing ? 'Processing...' : `Vote with ${paymentMethod === 'paystack' ? 'Paystack' : 'Flutterwave'}`}
+                  </button>
+
+                  <p className="text-center text-sm text-gray-500 mt-4">
+                    Secure payment powered by {paymentMethod === 'paystack' ? 'Paystack' : 'Flutterwave'}
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>

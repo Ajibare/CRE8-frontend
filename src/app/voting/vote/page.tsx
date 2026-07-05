@@ -51,6 +51,7 @@ function VotingPageContent() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'paystack' | 'flutterwave' | 'manual'>('paystack');
 
   const submissionId = searchParams.get('submissionId');
   const contestantId = searchParams.get('contestantId');
@@ -435,7 +436,7 @@ function VotingPageContent() {
                         <div className="text-lg font-semibold text-violet-600 mb-1">Votes</div>
                         <div className="text-sm text-gray-600">#{bundle.price.toLocaleString()}</div>
                         <div className="text-xs text-violet-600 font-medium">
-                          #{100} per vote
+                          #{200} per vote
                         </div>
                       </div>
                       <div className="text-xs text-gray-500 text-center mt-1">
@@ -454,6 +455,83 @@ function VotingPageContent() {
                 </div>
               </div>
 
+              {/* Payment Method */}
+              <div className="mb-6 border-t pt-6">
+                <h3 className="font-semibold text-gray-900 mb-3">Payment Method</h3>
+                <div className="flex gap-4 mb-4">
+                  <button
+                    onClick={() => setPaymentMethod('paystack')}
+                    className={`flex-1 p-4 rounded-xl border-2 text-center transition-all ${
+                      paymentMethod === 'paystack'
+                        ? 'border-violet-500 bg-violet-50'
+                        : 'border-gray-200 hover:border-violet-300'
+                    }`}
+                  >
+                    <div className="font-semibold text-gray-900">Paystack</div>
+                    <div className="text-sm text-gray-500">Card, Bank, USSD</div>
+                  </button>
+                  <button
+                    onClick={() => setPaymentMethod('flutterwave')}
+                    className={`flex-1 p-4 rounded-xl border-2 text-center transition-all ${
+                      paymentMethod === 'flutterwave'
+                        ? 'border-violet-500 bg-violet-50'
+                        : 'border-gray-200 hover:border-violet-300'
+                    }`}
+                  >
+                    <div className="font-semibold text-gray-900">Flutterwave</div>
+                    <div className="text-sm text-gray-500">Card, Bank, Mobile Money</div>
+                  </button>
+                </div>
+                <button
+                  onClick={() => setPaymentMethod('manual')}
+                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                    paymentMethod === 'manual'
+                      ? 'border-violet-500 bg-violet-50'
+                      : 'border-gray-200 hover:border-violet-300'
+                  }`}
+                >
+                  <div className="font-semibold text-gray-900">Bank Transfer (Manual)</div>
+                  <div className="text-sm text-gray-500">Transfer directly to our bank account</div>
+                </button>
+              </div>
+
+              {/* Manual Payment Details */}
+              {paymentMethod === 'manual' && (
+                <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                  <h4 className="font-semibold text-gray-900 mb-4">Bank Account Details</h4>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Bank:</span>
+                      <span className="font-semibold text-gray-900">Zenith Bank</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Account Number:</span>
+                      <span className="font-semibold text-gray-900">1311024233</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Account Name:</span>
+                      <span className="font-semibold text-gray-900">Fun-tech innovations</span>
+                    </div>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-blue-200">
+                    <p className="text-sm text-gray-600 mb-3">
+                      After making the transfer, send your payment proof to our Telegram:
+                    </p>
+                    <a
+                      href="https://t.me/funtechinnovationsglobal"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all"
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                      </svg>
+                      Send Payment Proof on Telegram
+                    </a>
+                  </div>
+                </div>
+              )}
+
               {/* Error Display */}
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
@@ -467,32 +545,34 @@ function VotingPageContent() {
               )}
 
               {/* Vote Button */}
-              <button
-                onClick={handleVote}
-                disabled={!selectedBundle || submitting || getRemainingVotes() === 0}
-                className="w-full bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-600 text-white py-4 rounded-xl font-semibold hover:from-violet-700 hover:via-indigo-700 hover:to-violet-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-              >
-                {submitting ? (
-                  <span className="flex items-center justify-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8 8 8 0 014 8 8 0 01-4 4 4 0 022-4 4zm0 0l-4 4m0 0l4 4m-4-4a4 4 0 00-4 4 4 0 004-4 4z"></path>
-                    </svg>
-                    Processing...
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center">
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 015.656 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    {selectedBundle ? (
-                      `Pay #${selectedBundle.price.toLocaleString()} for ${selectedBundle.votes} votes`
-                    ) : (
-                      'Select a voting package'
-                    )}
-                  </span>
-                )}
-              </button>
+              {paymentMethod !== 'manual' && (
+                <button
+                  onClick={handleVote}
+                  disabled={!selectedBundle || submitting || getRemainingVotes() === 0}
+                  className="w-full bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-600 text-white py-4 rounded-xl font-semibold hover:from-violet-700 hover:via-indigo-700 hover:to-violet-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  {submitting ? (
+                    <span className="flex items-center justify-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8 8 8 0 014 8 8 0 01-4 4 4 0 012-4 4zm0 0l-4 4m0 0l4 4m-4-4a4 4 0 00-4 4 4 0 004-4 4z"></path>
+                      </svg>
+                      Processing...
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center">
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 015.656 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                      {selectedBundle ? (
+                        `Pay #${selectedBundle.price.toLocaleString()} for ${selectedBundle.votes} votes`
+                      ) : (
+                        'Select a voting package'
+                      )}
+                    </span>
+                  )}
+                </button>
+              )}
 
               {/* Info */}
               <div className="bg-blue-50 rounded-lg p-4">
